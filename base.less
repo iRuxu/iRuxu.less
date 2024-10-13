@@ -1,166 +1,120 @@
 /*
  * Base.less
  * Author: iRuxu
- * Description: Base function,ie hack,quick layout
+ * Description: a simple and easy-to-use CSS framework, providing common writing combinations
  * Manual: http://csslab.cc
  */
 
-    /*-------------------------------------
-    ├   Font                              ┆
-    └------------------------------------*/
 
-    //字体大小
-    .fz(@font-size){
-        font-size:@font-size;
+/* Font Size -------------------------------------*/
+    .fz(@font-size, @line-height: null, @height: null) {
+        font-size: @font-size;
+        & when (@line-height) {
+            line-height: @line-height;
+        }
+        & when (@height) {
+            height: @height;
+        }
     }
 
-    //字体大小与行高
-    .fz(@font-size,@line-height){
-        font-size:@font-size;
-        line-height:@line-height;
-    }
-
-    //字体大小、行高、高度
-    .fz(@font-size,@line-height,@height){
-        font-size:@font-size;
-        line-height:@line-height;
-        height:@height;
-    }
-
-    //字体行高
-    .lh(@line-height){
-        line-height:@line-height;
-    }
-    //字体行高与高度
-    .lhh(@line-height,@height:@line-height){
-        line-height:@line-height;
-        height:@height;
+/* Font Height -------------------------------------*/
+    .lh(@line-height, @height: null) {
+        line-height: @line-height;
+        & when (@height) { height: @height; }
     }
    
-    //字体样式：粗体
+/* Font Style -------------------------------------*/
+
     .bold(@bold:bold){font-weight:@bold;}
 
-    //字体样式：斜体
     .italic(){font-style:italic;}
 
-    //字体样式：正常
     .normal(){font-weight:normal;font-style:normal;}
 
-    //字体样式：平滑
     .smooth(){
         -webkit-font-smoothing:antialiased;
         -moz-osx-font-smoothing:grayscale;
     }
 
-    //字体颜色
-    .color(@color){
-        color:@color;   //自身颜色，包括链接与非链接
-    }
-    .color(@color,@hovercolor){
-        color:@color;   //自身颜色，包括链接与非链接
-        &:hover{color:@hovercolor;} //自身Hover时
-    }
-    .color(@color,@acolor,@hovercolor){
-        color:@color;
-        a{color:@acolor;}
-        a:hover{color:@hovercolor;}
-    }
+/* Font Color -------------------------------------*/
 
-    //占位符placeholder样式
-    .tip(@property,@value){
-        &:-moz-placeholder {
-            @{property}:@value;
-        }
-        &:-ms-input-placeholder {
-            @{property}:@value;
-        }
-        &::-webkit-input-placeholder {
-            @{property}:@value;
+    .color(@color, @hovercolor: null) {
+        color: @color;
+        & when (@hovercolor) {
+            &:hover {
+                color: @hovercolor;
+            }
         }
     }
 
-    .tips(@font-size,@color,@text-align:left){
-        &:-moz-placeholder {
-            font-size:@font-size;
-            color: @color;
-            text-align:@text-align;
-        }
-        &:-ms-input-placeholder {
-            font-size:@font-size;
-            color: @color;
-            text-align:@text-align;
-        }
-        &::-webkit-input-placeholder {
-            font-size:@font-size;
-            color: @color;
-            text-align:@text-align;
-        }
+    .font-fill(@bg:linear-gradient(to right,#6777ef,#acb5f6)){
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-image: @bg;
     }
 
-    /*-------------------------------------
-    ├   Align                              ┆
-    └------------------------------------*/
+
+/* Word Break -------------------------------------*/
+
+    // 单行折行 Single Row Break
+    .break(){
+        white-space:normal;
+        word-break:break-all;
+
+        word-wrap:break-word;
+        overflow-wrap: break-word;
+
+        hyphens:auto;
+        line-break:strict;
+    }
+    
+    // 单行不折行 Single Row No Break
+    .nobreak(@style:ellipsis){
+        white-space:nowrap;
+        word-break:keep-all;
+
+        word-wrap:normal;
+        overflow-wrap: normal;
+        
+        text-overflow:@style;
+        overflow:hidden;
+    }
+
+    // 多行折行 Multi Row Break
+    .break(@lines,@inline:false){
+        display: if(@inline, -webkit-inline-box, -webkit-box);
+        -webkit-line-clamp: @lines;
+        -webkit-box-orient: vertical;
+        overflow:hidden;
+    }
+
+    // Text Indent
+    .indent(@indent:-200%){
+        text-indent:@indent;
+        overflow:hidden;
+    }
+
+
+/* Write Mode -------------------------------------*/
+  
+    // 书写模式：牌匾从右至左水平单行排版效果
+    .text(x){direction:rtl;unicode-bidi:bidi-override;}
+
+    // 书写模式：文笺从右至左、从上至下排版效果
+    .text(y){writing-mode:vertical-rl;text-combine-upright: all;}
+
+
+/* Inline(-Block) Align -------------------------------------*/
     
     //水平（x轴）对齐方式
-    .x(@text-align:center){text-align:@text-align;}
+    .x(@align:center){text-align:@align;}
 
     //垂直（y轴）对齐方式
-    .y(@vertical-align:middle){vertical-align:@vertical-align;} 
+    .y(@align:middle){vertical-align:@align;} 
 
     //层叠级别（z轴）
     .z(@index:1){z-index:@index;} 
 
-
-    /*-------------------------------------
-    ├   Text                              ┆
-    └------------------------------------*/
-
-    //文本折行处理
-    .break(){
-        white-space:normal;
-        word-wrap:break-word;
-        word-break:break-all;
-    }
-    //段落省略
-    .break(@lines,@height:auto){
-        display: -webkit-box;
-        -webkit-line-clamp: @lines; //设定行数，超出行数则省略，只webkit有效
-        -webkit-box-orient: vertical;
-        overflow:hidden;
-        height:@height;   //兼容FF等,以直接截断显示,需自行指定移动端时height设为auto
-    }
-    //文本不折行处理（可应用在inline-block水平排列）
-    .nobreak(){
-        white-space:nowrap;
-        word-wrap:normal;
-        word-break:keep-all;
-        text-overflow:ellipsis; //文本溢出处理方式,为显示“...”
-        overflow:hidden; //溢出生效需要对应用此属性的元素进行宽度设置(不能是自适应宽度)
-    }
-    .nobreak(clip){
-        white-space:nowrap;
-        word-wrap:normal;
-        word-break:keep-all;
-        text-overflow:clip; //文本溢出处理方式：直接剪裁
-        overflow:hidden;
-    }
-    .nobreak(visible){
-        white-space:nowrap;
-        word-wrap:normal;
-        word-break:keep-all;
-        overflow:visible; //总是显示溢出
-    }
-    //文本缩进隐藏（可应用于按钮,banner等位置背景图已有图片文字,保留文字仅作SEO优化）
-    .indent(@indent:-200%){
-        text-indent:@indent; //推荐使用此方式,减少移动端重绘能耗,根据需要扩大倍数至-200%+
-        overflow:hidden;
-    }
-
-    //书写模式：牌匾从右至左水平单行排版效果
-    .retext(x){direction:rtl;unicode-bidi:bidi-override;}
-
-    //书写模式：文笺从右至左、从上至下排版效果
-    .retext(y){writing-mode:tb-rl;writing-mode:vertical-rl;}
 
 
     /*-------------------------------------
@@ -459,7 +413,7 @@
         background:linear-gradient(to left,@color-start,@color-stop);
     }
     .gradient(r,@color-start,@color-stop){
-        background:linear-gradient(to right,@color-start,@color-stop);
+        // background:linear-gradient(to right,@color-start,@color-stop);
     }
     .gradient(t,@color-start,@color-stop){
         background:linear-gradient(to top,@color-start,@color-stop);

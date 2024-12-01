@@ -6,7 +6,9 @@
  */
 
 
-/* Font Size -------------------------------------*/
+/* Font -------------------------------------*/
+
+    // Font size & line height
     .fz(@font-size, @line-height: null, @height: null) {
         font-size: @font-size;
         & when (@line-height) {
@@ -17,14 +19,13 @@
         }
     }
 
-/* Font Height -------------------------------------*/
+    // line height
     .lh(@line-height, @height: null) {
         line-height: @line-height;
         & when (@height) { height: @height; }
     }
    
-/* Font Style -------------------------------------*/
-
+    // Font style
     .bold(@bold:bold){font-weight:@bold;}
 
     .italic(){font-style:italic;}
@@ -36,39 +37,30 @@
         -moz-osx-font-smoothing:grayscale;
     }
 
-/* Font Color -------------------------------------*/
-
+    // Font color
     .color(@color, @hovercolor: null) {
-        color: @color;
-        & when (@hovercolor) {
-            &:hover {
-                color: @hovercolor;
+        // 检查是否为纯色
+        & when (iscolor(@color)) {
+            color: @color;
+    
+            & when (@hovercolor) {
+                &:hover {
+                    color: @hovercolor;
+                }
             }
+        }
+        // 非纯色处理（背景填充逻辑）
+        & when not (iscolor(@color)) {
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: @color;
         }
     }
 
-    .font-fill(@bg:linear-gradient(to right,#6777ef,#acb5f6)){
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-image: @bg;
-    }
 
+/* Word -------------------------------------*/
 
-/* Word Break -------------------------------------*/
-
-    // 单行折行 Single Row Break
-    .break(){
-        white-space:normal;
-        word-break:break-all;
-
-        word-wrap:break-word;
-        overflow-wrap: break-word;
-
-        hyphens:auto;
-        line-break:strict;
-    }
-    
-    // 单行不折行 Single Row No Break
+    // 不折行
     .nobreak(@style:ellipsis){
         white-space:nowrap;
         word-break:keep-all;
@@ -80,12 +72,24 @@
         overflow:hidden;
     }
 
-    // 多行折行 Multi Row Break
-    .break(@lines,@inline:false){
-        display: if(@inline, -webkit-inline-box, -webkit-box);
-        -webkit-line-clamp: @lines;
-        -webkit-box-orient: vertical;
-        overflow:hidden;
+    // 折行
+    .break(@lines: auto, @inline: false) {
+        // 单行折行处理
+        & when (@lines = auto) {
+            white-space: normal;
+            word-break: break-all;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            hyphens: auto;
+            line-break: strict;
+        }
+        // 多行折行处理
+        & when not (@lines = auto) {
+            display: if(@inline, -webkit-inline-box, -webkit-box);
+            -webkit-line-clamp: @lines;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
     }
 
     // Text Indent
@@ -95,11 +99,9 @@
     }
 
 
-/* Write Mode -------------------------------------*/
-  
+    // Special Write Mode
     // 书写模式：牌匾从右至左水平单行排版效果
     .text(x){direction:rtl;unicode-bidi:bidi-override;}
-
     // 书写模式：文笺从右至左、从上至下排版效果
     .text(y){writing-mode:vertical-rl;text-combine-upright: all;}
 
@@ -117,108 +119,44 @@
 
 
 
-    /*-------------------------------------
-    ├   Size                              ┆
-    └------------------------------------*/
-    
-    //尺寸
+/* Box -------------------------------------*/    
+
     .w(@width){width:@width;}
     .h(@height){height:@height;} 
     .size(@width,@height:@width){width:@width;height:@height;}
-    .full(){width:100%;height:100%;}
-    .full(x){width:100%;}
-    .full(y){height:100%;}
 
-    //最小尺寸
+    .db{display:block;}
+    .none{display:none;}
+
+    .r(@radius){border-radius:@radius;}
+
+
+
+/* IE余孽 -------------------------------------*/
+
+    // min-*
     .min-width(@min-width){min-width:@min-width;_width:@min-width;}
     .min-height(@min-height){min-height:@min-height;_height:@min-height;}
-    
 
-    /*-------------------------------------
-    ├   Display                            ┆
-    └------------------------------------*/
-
-    //表现简写
-    .db(){display:block;} //表现为块级,比如将a、span等内联元素块级化
+    // display
     .dbi(){display:inline-block;*display:inline;*zoom:1;} //表现为内联块级元素，兼容IE6
-    .di(){display:inline;} //表现为内联元素
+    .clip(){overflow:hidden;*zoom:1;} //兼容IE6-7
 
-    //隐藏简写
-    .none{display:none;}
-    .hide{visibility:hidden;}
-    .show{visibility:visible;}
-
-    //溢出隐藏
-    .clip{overflow:hidden;*zoom:1;} //兼容IE6-7
-    .noclip(){overflow:visible}
-
-    /*-------------------------------------
-    ├   Layout                             ┆
-    └------------------------------------*/
-
-    //浮动
+    // float
     .fl{float:left;*display:inline;}      //IE6-7双倍margin bug处理
     .fr{float:right;*display:inline;}
-    .clearfix{                            //清除浮动塌陷
+    .clearfix{ //清除浮动塌陷
         *zoom:1;
         &:after{content:"";display:table;clear:both;}
     }
-    .clear(@clear:both){clear:@clear;}    //清除浮动
+    .clear(@clear:both){clear:@clear;} //清除浮动
 
-    //单侧浮动布局
-    .fbox{
-        display:table-cell;width:5000px;
-        *display:inline-block;*width:auto;
-    }
-
-    //浮动阵列
-    .flist(@item-spacing){
-        //默认遮盖溢出显示
-        .clip;*position:relative;
-        ul{
-            //浮动闭合
-            .clearfix;
-            margin-right:-@item-spacing;
-            li{
-                //IE6-7必须控制溢出
-                *overflow:hidden;
-                //每个单元浮动
-                .fl;
-                //单元宽度与间距
-                margin-right:@item-spacing;
-                margin-bottom:@item-spacing;
-            }
-        }   
-    }
-    .flist(@inner,@item,@item-spacing){
-        //默认遮盖溢出显示
-        .clip;*position:relative;
-        .@{inner}{
-            //浮动闭合
-            .clearfix;
-            margin-right:-@item-spacing;
-            .@{item}{
-                //IE6-7必须控制溢出
-                *overflow:hidden;
-                //每个单元浮动
-                .fl;
-                //单元宽度与间距
-                margin-right:@item-spacing;
-                margin-bottom:@item-spacing;
-            }
-        }   
-    }
-
-    //inline-block布局替代float
-    .iblock(){
-        font-size:0;white-space:nowrap;
-        li{.dbi;.y(top);font-size:1rem;white-space:normal;}
-    }
-    .iblock(@selector){
-        font-size:0;white-space:nowrap;
-        @{selector}{.dbi;.y(top);font-size:1rem;white-space:normal;}
-    }
     
+
+
+
+
+
     //多列
     .cols(@width,@count,@gap) {
         column-width: @width;
@@ -481,8 +419,7 @@
     ├   Other                              ┆
     └------------------------------------*/
     
-    //圆角
-    .r(@radius){border-radius:@radius;}
+   
 
     //指针
     .pointer(){cursor:pointer;}

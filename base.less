@@ -118,7 +118,6 @@
     .z(@index:1){z-index:@index;} 
 
 
-
 /* Box -------------------------------------*/    
 
     .w(@width){width:@width;}
@@ -129,6 +128,14 @@
     .none{display:none;}
 
     .r(@radius){border-radius:@radius;}
+
+
+/* Layout -------------------------------------*/  
+
+    .flex{display:flex;}
+    .flex(x){display:flex;justify-content:center;}
+    .flex(y){display:flex;align-items:center;}
+    .flex(o){display:flex;justify-content:center;align-items:center;}
 
 
 
@@ -174,20 +181,10 @@
     /*-------------------------------------
     ├   Flex & Grid                        ┆
     └------------------------------------*/
-    .flex{display:flex;}
-    .iflex{display:inline-flex;}
+    
 
     .grid{display:grid;}
     .igrid{display:inline-grid;}
-
-    .flex(lr){flex-direction:row;}
-    .flex(rl){flex-direction:row-reverse;}
-    .flex(tb){flex-direction:column;}
-    .flex(bt){flex-direction:row-reverse;}
-
-    .flex(x,@method:center){justify-content:@method;}
-    .flex(y,@method:center){align-content:@method;align-items:@method;}
-    .flex(o){justify-content:center;align-content:center;align-items:center;}
 
     .grid(x,@method:center){justify-content:@method;}
     .grid(y,@method:center){align-content:@method;}

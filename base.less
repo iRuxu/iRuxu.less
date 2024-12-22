@@ -101,18 +101,20 @@
 
     // Special Write Mode
     // 书写模式：牌匾从右至左水平单行排版效果
-    .text(x){direction:rtl;unicode-bidi:bidi-override;}
+    .retext(x){direction:rtl;unicode-bidi:bidi-override;}
     // 书写模式：文笺从右至左、从上至下排版效果
-    .text(y){writing-mode:vertical-rl;text-combine-upright: all;}
+    .retext(y){writing-mode:vertical-rl;text-combine-upright: all;}
 
 
 /* Inline(-Block) Align -------------------------------------*/
     
     //水平（x轴）对齐方式
     .x(@align:center){text-align:@align;}
+    .auto(x){margin-left:auto;margin-right:auto;}
 
     //垂直（y轴）对齐方式
     .y(@align:middle){vertical-align:@align;} 
+    .auto(y){display:table-cell;vertical-align:middle;}
 
     //层叠级别（z轴）
     .z(@index:1){z-index:@index;} 
@@ -132,11 +134,28 @@
 
 /* Layout -------------------------------------*/  
 
+
     .flex{display:flex;}
     .flex(x){display:flex;justify-content:center;}
     .flex(y){display:flex;align-items:center;}
     .flex(o){display:flex;justify-content:center;align-items:center;}
 
+    .ps{position:static;}
+    .pr{position:relative;*zoom:1;}
+    .pa{position:absolute;}
+    .pf{position:fixed;}
+
+    .lt(@l,@t:@l){left:@l;top:@t;}
+    .rt(@r,@t:@r){right:@r;top:@t;}
+    .lb(@l,@b:@l){left:@l;bottom:@b;}
+    .rb(@r,@b:@r){right:@r;bottom:@b;}
+  
+      
+
+
+/* Other -------------------------------------*/  
+
+    .pointer(){cursor:pointer;}
 
 
 /* IE余孽 -------------------------------------*/
@@ -159,8 +178,22 @@
     .clear(@clear:both){clear:@clear;} //清除浮动
 
     
+/* Deprecated -------------------------------------*/
 
+    .pl(@padding){padding-left:@padding;}
+    .pr(@padding){padding-right:@padding;}
+    .pt(@padding){padding-top:@padding;}
+    .pb(@padding){padding-bottom:@padding;}
+    .ml(@margin){margin-left:@margin;}
+    .mr(@margin){margin-right:@margin;}
+    .mt(@margin){margin-top:@margin;}
+    .mb(@margin){margin-bottom:@margin;}
 
+    .tm(@tm){
+        @alpha:@tm*100;
+        opacity:@tm; //ie9 webkit etc.
+        filter:alpha(opacity=@alpha); //ie5-ie7
+    }
 
 
 
@@ -193,248 +226,3 @@
     .item(x,@method:center){justify-items:@method;}
     .item(y,@method:center){align-items:@method;}
     .item(o){justify-items:center;align-items:center;}
-
-    /*-------------------------------------
-    ├   Position                           ┆
-    └------------------------------------*/
-
-    //定位简写
-    .ps{position:static;}
-    .pr{position:relative;*zoom:1;}
-    .pa{position:absolute;}
-    .pf{position:fixed;}
-    .po{.ps;margin:0;} //复位
-
-    //位置简写    
-    .lt(@l,@t:@l){left:@l;top:@t;}
-    .rt(@r,@t:@r){right:@r;top:@t;}
-    .lb(@l,@b:@l){left:@l;bottom:@b;}
-    .rb(@r,@b:@r){right:@r;bottom:@b;}
-
-    //边距
-    .pl(@padding){padding-left:@padding;}
-    .pr(@padding){padding-right:@padding;}
-    .pt(@padding){padding-top:@padding;}
-    .pb(@padding){padding-bottom:@padding;}
-    .ml(@margin){margin-left:@margin;}
-    .mr(@margin){margin-right:@margin;}
-    .mt(@margin){margin-top:@margin;}
-    .mb(@margin){margin-bottom:@margin;}
-
-    //居中对齐
-    .auto(x){margin-left:auto;margin-right:auto;}
-    .auto(y){display:table-cell;vertical-align:middle;}
-    .auto(o){.auto(y);.x;}  //如内部元素设为display:block,则需自行设置.auto(x)
-
-    //居中定位·绝对定位方式（未定义/不确定尺寸时,不兼容IE6）
-    .mid(o,@edgeX:0,@edgeY:@edgeX){
-        position:absolute;margin:auto;
-        left:@edgeX;right:@edgeX;
-        top:@edgeY;bottom:@edgeY;
-    }
-    .mid(x,@edgeL:0,@edgeR:@edgeL){
-        position:absolute;margin-left:auto;margin-right:auto;
-        left:@edgeL;right:@edgeR;
-    }
-    .mid(y,@edgeT:0,@edgeB:@edgeT){
-        position:absolute;margin-top:auto;margin-bottom:auto;
-        top:@edgeT;bottom:@edgeB;
-    }
-
-    //窗口固定（未定义/不确定尺寸时,不兼容IE6）
-    .pf(o,@edgeX:0,@edgeY:@edgeX){position:fixed;left:@edgeX;right:@edgeX;top:@edgeY;bottom:@edgeY;}
-    .pf(x,@edgeX:0){position:fixed;left:@edgeX;right:@edgeX;}
-    .pf(y,@edgeY:0){position:fixed;top:@edgeY;bottom:@edgeY;}
-
-    //居中定位·绝对定位方式（已知元素尺寸时,兼容IE6）
-    .ct(x,@width,@fix:0){
-        position:absolute;
-        left:50%;
-        margin-left:-@width/2 + @fix;
-    }
-    .ct(y,@height,@fix:0){
-        position:absolute;
-        top:50%;
-        margin-top:-@height/2 + @fix;
-    }
-    .ct(o,@width,@height:@width,@fix-x:0,@fix-y:0){
-        position:absolute;left:50%;top:50%;
-        margin-left:-@width/2 + @fix-x;margin-top:-@height/2 + @fix-y;
-    }
-
-    //居中定位·固定定位方式（未定义/不确定尺寸时,不兼容IE6）
-    .fix(o,@edgeX:0,@edgeY:@edgeX){
-        position:fixed;
-        left:@edgeX;right:@edgeX;
-        top:@edgeY;bottom:@edgeY;
-    }
-    .fix(x,@edgeL:0,@edgeR:@edgeL){
-        position:fixed;
-        left:@edgeL;right:@edgeR;
-    }
-    .fix(y,@edgeT:0,@edgeB:@edgeT){
-        position:fixed;
-        top:@edgeT;bottom:@edgeB;
-    }
-    
-    //窗口固定（已知元素尺寸时,部分兼容IE6）
-    .fixed(@_,@side:0,@fix:0){
-        position: fixed;
-        _position:absolute;
-        *zoom:1; 
-    }
-    .fixed(lt,@side:0,@fix:0){
-        left:unit(@side,px);
-        top:unit(@fix,px);
-        @fixs:unit(@fix);
-        _top:~'expression(eval(document.documentElement.scrollTop + @{fix}))';
-    }
-    .fixed(rt,@side:0,@fix:0){
-        right:unit(@side,px);
-        top:unit(@fix,px);
-        @fixs:unit(@fix);
-        _top:~'expression(eval(document.documentElement.scrollTop + @{fix}))';
-    }
-    .fixed(lb,@side:0,@fix:0){
-        left:unit(@side,px);
-        bottom:unit(@fix,px);
-        @fixs:unit(@fix);
-        _top:~'expression(eval(document.documentElement.scrollTop + document.documentElement.clientHeight - this.offsetHeight + @{fix}))';
-    }
-    .fixed(rb,@side:0,@fix:0){
-        right:unit(@side,px);
-        bottom:unit(@fix,px);
-        @fixs:unit(@fix);
-        _top:~'expression(eval(document.documentElement.scrollTop + document.documentElement.clientHeight - this.offsetHeight + @{fix}))';
-    }
-    .fixed(o,@width,@height){
-        width:unit(@width,px);
-        height:unit(@height,px);
-        left:50%;top:50%;
-        @xmargin:unit(@width/2,px);@ymargin:unit(@height/2,px);
-        margin-left:-@xmargin;margin-top:-@ymargin;
-        _top:~'expression(eval(document.documentElement.scrollTop + document.documentElement.clientHeight/2))';
-    }
-    .fixed(x,@width){
-        width:@width;
-        left:50%;
-        @xmargin:@width/2;
-        margin-left:-@xmargin;
-    }
-    .fixed(y,@height){
-        height:@height;
-        top:50%;
-        @ymargin:@height/2;
-        margin-top:-@ymargin;
-    }
-
-    //在含有fix顶等元素时，在页面less文件的开头添加如下以防止闪动
-    .hasfixed(){
-        html,body{_background-image:url(about:blank);_background-attachment:fixed;}
-    }
-
-    //弹窗期间给html添加禁止滚动
-    .islocked{
-        width:100%;height:100%;overflow:hidden;
-        body{width:100%;height:100%;overflow:hidden;}
-    }
-
-    /*-------------------------------------
-    ├   Image                              ┆
-    └------------------------------------*/
-
-    //渐变
-    .gradient(l,@color-start,@color-stop){
-        background:linear-gradient(to left,@color-start,@color-stop);
-    }
-    .gradient(r,@color-start,@color-stop){
-        // background:linear-gradient(to right,@color-start,@color-stop);
-    }
-    .gradient(t,@color-start,@color-stop){
-        background:linear-gradient(to top,@color-start,@color-stop);
-    }
-    .gradient(b,@color-start,@color-stop){
-        background:linear-gradient(to bottom,@color-start,@color-stop);
-    }
-    .gradient(o,@color-start,@color-stop){
-        background:radial-gradient(circle,@color-start,@color-stop);
-    }
-
-    //雪碧图·横向阵列，传入个数，单元宽度
-    .sprite(@n,@unit-width){
-        .sprite-generate(@i:0) when (@i <= @n){
-            .sprite-@{i}{
-                background-position:-@unit-width*(@i - 1) 0;
-            }
-            .sprite-generate(@i + 1);
-        }
-        .sprite-generate(0);
-    }
-
-    .sprite(@n,@unit-width,@selector){
-        .sprite-generate(@i:0) when (@i <= @n){
-            .@{selector}-@{i}{
-                background-position:-@unit-width*(@i - 1) 0;
-            }
-            .sprite-generate(@i + 1);
-        }
-        .sprite-generate(0);
-    }
-
-    /*-------------------------------------
-    ├   Effect                             ┆
-    └------------------------------------*/
-
-    //元素透明度
-    .tm(@tm){
-        @alpha:@tm*100;
-        opacity:@tm; //ie9 webkit etc.
-        filter:alpha(opacity=@alpha); //ie5-ie7
-    }
-    //背景色半透明
-    .tb(@r,@g,@b,@tm){
-        @rgba:rgba(@r,@g,@b,@tm);
-        @rgb:rgb(@r,@g,@b);
-        @ietm:argb(@rgba);
-        background-color: @rgba;    //webkit,moz,ms10+
-        filter:~"progid:DXImageTransform.Microsoft.gradient(enabled='true', startColorstr=@{ietm}, endColorstr=@{ietm}) \9";  //ie7-8
-        _background-color: @rgb;    //ie6
-    }
-
-    //模糊
-    .blur(@blur){
-        filter:blur(@blur);
-        -webkit-filter:blur(@blur);
-        -moz-filter:blur(@blur);
-        -o-filter:blur(@blur);
-        -ms-filter:blur(@blur);
-        filter: progid:DXImageTransform.Microsoft.Blur(PixelRadius='@{blur}');
-        *zoom: 1;
-    }
-
-    /*-------------------------------------
-    ├   Other                              ┆
-    └------------------------------------*/
-    
-   
-
-    //指针
-    .pointer(){cursor:pointer;}
-
-    //三维闪动bug处理
-    .tsfix(){
-        -webkit-backface-visibility:hidden;
-        -webkit-transform-style:preserve-3d;
-    }
-
-    //字体图标
-    .iconfont{
-        display:inline-block;*display:inline;*zoom:1;
-        vertical-align:middle;
-        font-family:"iconfont";
-        font-style:normal;
-        -webkit-font-smoothing: antialiased;
-        -webkit-text-stroke-width: 0.2px;
-        -moz-osx-font-smoothing: grayscale;
-        cursor:pointer;
-    }
